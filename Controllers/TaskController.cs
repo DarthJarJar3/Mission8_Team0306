@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mission8_Team0306.Models;
+using Mission8_Team0306.Repositories;
 
 public class TaskController : Controller
 {
