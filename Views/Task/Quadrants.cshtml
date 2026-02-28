@@ -1,0 +1,50 @@
+@model IEnumerable<Mission8_Team0306.Models.TaskItem>
+@{ ViewData["Title"] = "Quadrants"; }
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Task Quadrants</h2>
+    <div class="row g-3">
+
+        @foreach (var q in new[] {
+            (num: 1, label: "Q1 – Important / Urgent",         color: "danger"),
+            (num: 2, label: "Q2 – Important / Not Urgent",     color: "success"),
+            (num: 3, label: "Q3 – Not Important / Urgent",     color: "warning"),
+            (num: 4, label: "Q4 – Not Important / Not Urgent", color: "secondary")
+        })
+        {
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-@q.color text-white fw-bold">@q.label</div>
+                    <div class="card-body">
+                        @foreach (var task in Model.Where(t => t.Quadrant == q.num))
+                        {
+                            <div class="border rounded p-2 mb-2">
+                                <strong>@task.TaskName</strong>
+                                <small class="text-muted d-block">
+                                    @(task.DueDate.HasValue ? "Due: " + task.DueDate.Value.ToString("MM/dd/yyyy") : "")
+                                    @(task.Category != null ? "| " + task.Category.CategoryName : "")
+                                </small>
+                                <div class="mt-2 d-flex gap-2">
+                                    <a asp-controller="Task" asp-action="Edit" asp-route-id="@task.TaskId" class="btn btn-sm btn-outline-primary">Edit</a>
+
+                                    <form asp-controller="Task" asp-action="Complete" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@task.TaskId" />
+                                        <button class="btn btn-sm btn-outline-success">Complete</button>
+                                    </form>
+
+                                    <form asp-controller="Task" asp-action="Delete" method="post" onsubmit="return confirm('Delete this task?')">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@task.TaskId" />
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
